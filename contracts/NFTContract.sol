@@ -7,16 +7,31 @@ import "@openzeppelin/contracts/token/ERC721/extensions/ERC721URIStorage.sol";
 import "@openzeppelin/contracts/access/Ownable.sol";
 
 contract NFTContract is ERC721, ERC721URIStorage, Ownable {
-    uint256 private _nextTokenId;
+    mapping(uint256 tokenId => uint256) private _swarmHashes;
 
     constructor(
         address initialOwner
     ) ERC721("MyToken", "MTK") Ownable(initialOwner) {}
 
-    function safeMint(address to, string memory uri) public onlyOwner {
-        uint256 tokenId = _nextTokenId++;
+    function safeMint(address to, uint256 tokenId, uint256 swarmHash) public {
+        require(
+            _ownerOf(tokenId) == address(0),
+            "This token ID already exists"
+        );
         _safeMint(to, tokenId);
-        _setTokenURI(tokenId, uri);
+        _swarmHashes[tokenId] = swarmHash;
+    }
+
+    function updateMetadata(uint256 tokenId, uint256 swarmHash) public {
+        require(
+            _ownerOf(tokenId) == _msgSender(),
+            "ERC721: caller is not owner of the NFT"
+        );
+        _swarmHashes[tokenId] = swarmHash;
+    }
+
+    function metadata(uint256 tokenId) public view returns (uint256) {
+        return _swarmHashes[tokenId];
     }
 
     // The following functions are overrides required by Solidity.

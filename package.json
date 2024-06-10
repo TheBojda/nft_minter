@@ -41,9 +41,12 @@
     "typescript": "^5.4.5"
   },
   "dependencies": {
+    "@ethersphere/bee-js": "^7.0.0",
     "@openzeppelin/contracts": "^5.0.2",
     "body-parser": "^1.20.2",
     "dotenv": "^16.4.5",
-    "express": "^4.19.2"
+    "express": "^4.19.2",
+    "keccak": "^3.0.4",
+    "uuid": "^9.0.1"
   }
 }
