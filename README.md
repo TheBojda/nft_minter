@@ -4,10 +4,20 @@ Mint NFT from the given JSON, and store the content on Ethereum Swarm in Beeson
 Usage (testing):
 
 ```
-npx hardhat node (in a separated terminal)
+yarn blockchain (in a separated terminal)
 ```
 
 Copy the private key to .env/OWNER_PRIVATE_KEY
+
+```
+yarn bee (in a separated terminal)
+```
+
+```
+curl -X http://localhost:1633/stamps/10000000/18
+```
+
+Copy the postage batch ID to .env/POSTAGE_BATCH_ID
 
 ```
 yarn deploy

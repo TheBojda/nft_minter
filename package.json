@@ -4,7 +4,8 @@
   "description": "Mint NFT from the given JSON, and store the content on Ethereum Swarm in Beeson",
   "main": "index.js",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1",
+    "blockchain": "hardhat node",
+    "bee": "docker run -p 1634:1634 -p 1633:1633 --rm -it ethersphere/bee:stable dev",
     "deploy": "hardhat run --network localhost scripts/deploy.ts",
     "start": "ts-node src/app.ts"
   },
