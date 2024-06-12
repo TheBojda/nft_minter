@@ -7,7 +7,8 @@
     "blockchain": "hardhat node",
     "bee": "docker run -p 1634:1634 -p 1633:1633 --rm -it ethersphere/bee:stable dev --cors-allowed-origins=\"*\"",
     "deploy": "hardhat run --network localhost scripts/deploy.ts",
-    "start": "ts-node src/app.ts"
+    "start": "ts-node src/app.ts",
+    "dashboard": "bee-dashboard"
   },
   "repository": {
     "type": "git",
@@ -20,6 +21,7 @@
   },
   "homepage": "https://github.com/TheBojda/nft_minter#readme",
   "devDependencies": {
+    "@ethersphere/bee-dashboard": "^0.27.0",
     "@nomicfoundation/hardhat-chai-matchers": "^2.0.0",
     "@nomicfoundation/hardhat-ethers": "^3.0.0",
     "@nomicfoundation/hardhat-ignition": "^0.15.1",
