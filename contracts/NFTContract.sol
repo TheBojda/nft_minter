@@ -9,6 +9,12 @@ import "@openzeppelin/contracts/access/Ownable.sol";
 contract NFTContract is ERC721, ERC721URIStorage, Ownable {
     mapping(uint256 tokenId => uint256) private _swarmHashes;
 
+    event MetadataUpdated(
+        address indexed owner,
+        uint256 indexed tokenId,
+        uint256 swarmHash
+    );
+
     constructor(
         address initialOwner
     ) ERC721("MyToken", "MTK") Ownable(initialOwner) {}
@@ -20,6 +26,8 @@ contract NFTContract is ERC721, ERC721URIStorage, Ownable {
         );
         _safeMint(to, tokenId);
         _swarmHashes[tokenId] = swarmHash;
+
+        emit MetadataUpdated(to, tokenId, swarmHash);
     }
 
     function updateMetadata(uint256 tokenId, uint256 swarmHash) public {
@@ -28,6 +36,8 @@ contract NFTContract is ERC721, ERC721URIStorage, Ownable {
             "ERC721: caller is not owner of the NFT"
         );
         _swarmHashes[tokenId] = swarmHash;
+
+        emit MetadataUpdated(_msgSender(), tokenId, swarmHash);
     }
 
     function metadata(uint256 tokenId) public view returns (uint256) {
