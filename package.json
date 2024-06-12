@@ -5,7 +5,7 @@
   "main": "index.js",
   "scripts": {
     "blockchain": "hardhat node",
-    "bee": "docker run -p 1634:1634 -p 1633:1633 --rm -it ethersphere/bee:stable dev",
+    "bee": "docker run -p 1634:1634 -p 1633:1633 --rm -it ethersphere/bee:stable dev --cors-allowed-origins=\"*\"",
     "deploy": "hardhat run --network localhost scripts/deploy.ts",
     "start": "ts-node src/app.ts"
   },
