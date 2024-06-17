@@ -8,6 +8,11 @@ import dotenv from "dotenv";
 import { v4 as uuidv4 } from "uuid";
 import keccak256 from "keccak";
 
+type TokenHistory = {
+    tokenId: string;
+    hashes: string[];
+}[];
+
 dotenv.config();
 
 const app = express();
@@ -111,14 +116,20 @@ app.get("/history/:address", async (req: Request, res: Response) => {
             contract.filters.MetadataUpdated(address)
         );
 
-        let history = {};
+        let history: TokenHistory;
+
         for (let event of events) {
             const tokenId = event.args.tokenId.toHexString();
             console.log(tokenId);
-            history[tokenId] = history[tokenId] || [];
-            history[tokenId].push(
-                event.args.swarmHash.toHexString().substring(2)
-            );
+
+            const hash = event.args.swarmHash.toHexString().substring(2);
+            const found = history.find((x) => x.tokenId === tokenId);
+
+            if (found === undefined) {
+                history.push({ tokenId: tokenId, hashes: [hash] });
+            } else {
+                found.hashes.push(hash);
+            }
         }
 
         res.status(200).json(history);
@@ -141,14 +152,20 @@ app.get("/list", async (req: Request, res: Response) => {
             contract.filters.MetadataUpdated()
         );
 
-        let history = {};
+        let history: TokenHistory;
+
         for (let event of events) {
             const tokenId = event.args.tokenId.toHexString();
             console.log(tokenId);
-            history[tokenId] = history[tokenId] || [];
-            history[tokenId].push(
-                event.args.swarmHash.toHexString().substring(2)
-            );
+
+            const hash = event.args.swarmHash.toHexString().substring(2);
+            const found = history.find((x) => x.tokenId === tokenId);
+
+            if (found === undefined) {
+                history.push({ tokenId: tokenId, hashes: [hash] });
+            } else {
+                found.hashes.push(hash);
+            }
         }
 
         res.status(200).json(history);
