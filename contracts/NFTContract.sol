@@ -17,7 +17,7 @@ contract NFTContract is ERC721, ERC721URIStorage, Ownable {
 
     constructor(
         address initialOwner
-    ) ERC721("MyToken", "MTK") Ownable(initialOwner) {}
+    ) ERC721("TrackableNFT", "TNFT") Ownable(initialOwner) {}
 
     function safeMint(address to, uint256 tokenId, uint256 swarmHash) public {
         require(

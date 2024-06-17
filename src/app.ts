@@ -105,6 +105,29 @@ app.get('/history/:address', async (req: Request, res: Response) => {
     }
 });
 
+app.get('/list', async (req: Request, res: Response) => {
+    try {
+        const provider = new JsonRpcProvider(process.env.JSON_RPC_PROVIDER);
+        const wallet = new Wallet(process.env.OWNER_PRIVATE_KEY as string, provider);
+        const contract = new Contract(contractAddress, contractABI, wallet);
+
+        const events = await contract.queryFilter(contract.filters.MetadataUpdated())
+
+        let history = {}
+        for (let event of events) {
+            const tokenId = event.args.tokenId.toHexString()
+            console.log(tokenId)
+            history[tokenId] = history[tokenId] || []
+            history[tokenId].push(event.args.swarmHash.toHexString().substring(2))
+        }
+
+        res.status(200).json(history)
+    } catch (error) {
+        console.error('Error getting NFT list:', error);
+        res.status(500).send('Error getting NFT list');
+    }
+});
+
 app.listen(port, () => {
     console.log(`Server is running on http://localhost:${port}`);
 });
