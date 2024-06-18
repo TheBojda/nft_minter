@@ -116,7 +116,7 @@ app.get("/history/:address", async (req: Request, res: Response) => {
             contract.filters.MetadataUpdated(address)
         );
 
-        let history: TokenHistory;
+        let history: TokenHistory = [];
 
         for (let event of events) {
             const tokenId = event.args.tokenId.toHexString();
@@ -152,7 +152,7 @@ app.get("/list", async (req: Request, res: Response) => {
             contract.filters.MetadataUpdated()
         );
 
-        let history: TokenHistory;
+        let history: TokenHistory = [];
 
         for (let event of events) {
             const tokenId = event.args.tokenId.toHexString();
