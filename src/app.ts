@@ -1,5 +1,6 @@
 import express, { Request, Response } from "express";
 import bodyParser from "body-parser";
+import cors from "cors";
 import { JsonRpcProvider } from "@ethersproject/providers";
 import { Wallet } from "@ethersproject/wallet";
 import { Contract } from "@ethersproject/contracts";
@@ -18,7 +19,7 @@ dotenv.config();
 const app = express();
 const port = 3000;
 
-app.use(bodyParser.json());
+app.use(bodyParser.json()).use(cors());
 
 const contractABI: any[] = [
     "function safeMint(address to, uint256 tokenId, uint256 swarmHash)",
