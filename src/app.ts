@@ -1,5 +1,6 @@
 import express, { Request, Response } from "express";
 import bodyParser from "body-parser";
+import cors from "cors";
 import { JsonRpcProvider } from "@ethersproject/providers";
 import { Wallet } from "@ethersproject/wallet";
 import { Contract } from "@ethersproject/contracts";
@@ -18,7 +19,7 @@ dotenv.config();
 const app = express();
 const port = 3000;
 
-app.use(bodyParser.json());
+app.use(bodyParser.json()).use(cors());
 
 const contractABI: any[] = [
     "function safeMint(address to, uint256 tokenId, uint256 swarmHash)",
@@ -116,7 +117,7 @@ app.get("/history/:address", async (req: Request, res: Response) => {
             contract.filters.MetadataUpdated(address)
         );
 
-        let history: TokenHistory;
+        let history: TokenHistory = [];
 
         for (let event of events) {
             const tokenId = event.args.tokenId.toHexString();
@@ -152,7 +153,7 @@ app.get("/list", async (req: Request, res: Response) => {
             contract.filters.MetadataUpdated()
         );
 
-        let history: TokenHistory;
+        let history: TokenHistory = [];
 
         for (let event of events) {
             const tokenId = event.args.tokenId.toHexString();
