@@ -50,7 +50,8 @@ app.post("/mint", async (req: Request, res: Response) => {
             process.env.POSTAGE_BATCH_ID,
             JSON.stringify(content),
             `${tokenUUID}.json`,
-            { contentType: "application/json" }
+            { contentType: "application/json",
+              pin: true,}
         );
 
         const tokenId = BigInt(
