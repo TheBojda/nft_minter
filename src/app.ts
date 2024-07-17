@@ -73,7 +73,7 @@ app.post(
             const swarmHash = BigInt("0x" + result.reference);
             console.log(swarmHash.toString());
 
-            contract.safeMint(to, tokenId, swarmHash);
+            await contract.safeMint(to, tokenId, swarmHash);
 
             res.status(200).json({
                 message: "NFT minted successfully!",
