@@ -8,6 +8,7 @@ import { Bee } from "@ethersphere/bee-js";
 import dotenv from "dotenv";
 import { v4 as uuidv4 } from "uuid";
 import keccak256 from "keccak";
+import jsonata from "jsonata";
 
 type TokenHistory = {
     tokenId: string;
@@ -109,11 +110,9 @@ app.get(
 
             const { tokenId } = req.params;
 
-            const metadata = await contract.metadata(BigInt(tokenId));
-
-            const bee = new Bee(process.env.SWARM_API_URL);
-            const file = await bee.downloadFile(
-                metadata.toHexString().substring(2)
+            const { metadata, file } = await getTokenMetadata(
+                contract,
+                tokenId
             );
 
             res.status(200).json({
@@ -175,6 +174,14 @@ app.get(
     "/list",
     async (req: Request<void>, res: Response<TokenHistory | string>) => {
         try {
+            const qfilter = req.query.filter || "true";
+
+            if (typeof qfilter !== "string")
+                throw new Error("filter must be a string");
+
+            const filter = jsonata(qfilter);
+            const matchedTokenIds: Map<string, boolean> = new Map();
+
             const provider = new JsonRpcProvider(process.env.JSON_RPC_PROVIDER);
             const wallet = new Wallet(
                 process.env.OWNER_PRIVATE_KEY as string,
@@ -190,13 +197,27 @@ app.get(
 
             for (let event of events) {
                 const tokenId = event.args.tokenId.toHexString();
-                console.log(tokenId);
 
                 const hash = event.args.swarmHash.toHexString().substring(2);
                 const found = history.find((x) => x.tokenId === tokenId);
 
                 if (found === undefined) {
-                    history.push({ tokenId: tokenId, hashes: [hash] });
+                    let match = matchedTokenIds.get(tokenId);
+                    if (match === undefined) {
+                        const metadata = await getTokenMetadata(
+                            contract,
+                            tokenId
+                        );
+                        match = !!(await filter.evaluate(
+                            metadata.file.data.json()
+                        ));
+                        matchedTokenIds.set(tokenId, match);
+                    }
+                    if (match)
+                        history.push({
+                            tokenId: tokenId,
+                            hashes: [hash],
+                        });
                 } else {
                     found.hashes.push(hash);
                 }
@@ -213,3 +234,13 @@ app.get(
 app.listen(port, () => {
     console.log(`Server is running on http://localhost:${port}`);
 });
+
+async function getTokenMetadata(contract: Contract, tokenId: string) {
+    const metadata = await contract.metadata(BigInt(tokenId));
+
+    const file = await new Bee(process.env.SWARM_API_URL).downloadFile(
+        metadata.toHexString().substring(2)
+    );
+
+    return { metadata, file };
+}
