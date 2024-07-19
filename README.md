@@ -9,15 +9,19 @@ yarn blockchain (in a separated terminal)
 
 Copy the private key to .env/OWNER_PRIVATE_KEY
 
+Set .env/JSON_RPC_PROVIDER to the provider URL (usually `http://127.0.0.1:8545`)
+
 ```
 yarn bee (in a separated terminal)
 ```
 
 ```
-curl -X http://localhost:1633/stamps/10000000/18
+curl -X POST http://localhost:1633/stamps/10000000/18
 ```
 
 Copy the postage batch ID to .env/POSTAGE_BATCH_ID
+
+Point .env/SWARM_API_URL to Bee API URL (usually `http://localhost:1633`)
 
 ```
 yarn deploy
