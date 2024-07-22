@@ -204,14 +204,18 @@ app.get(
                 if (found === undefined) {
                     let match = matchedTokenIds.get(tokenId);
                     if (match === undefined) {
-                        const metadata = await getTokenMetadata(
-                            contract,
-                            tokenId
-                        );
-                        match = !!(await filter.evaluate(
-                            metadata.file.data.json()
-                        ));
-                        matchedTokenIds.set(tokenId, match);
+                        try {
+                            const metadata = await getTokenMetadata(
+                                contract,
+                                tokenId
+                            );
+                            match = !!(await filter.evaluate(
+                                metadata.file.data.json()
+                            ));
+                            matchedTokenIds.set(tokenId, match);
+                        } catch (error) {
+                            matchedTokenIds.set(tokenId, false);
+                        }
                     }
                     if (match)
                         history.push({
